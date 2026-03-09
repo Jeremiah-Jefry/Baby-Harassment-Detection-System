@@ -10,7 +10,7 @@ class AlertEvent(BaseEvent):
     """
     Domain entity representing an AI inference alert.
     """
-    type: Literal["danger", "warning", "info"]
+    type: Literal["danger", "warning", "info", "critical", "urgent", "alert"]
     message: str
     target: Literal["baby", "babysitter"]
     confidence: float

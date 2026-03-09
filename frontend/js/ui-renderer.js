@@ -120,11 +120,15 @@ export class UIRenderer {
         const card = target === 'baby' ? this.dom.babyCard : this.dom.sitterCard;
         const textElement = target === 'baby' ? this.dom.babyStatusText : this.dom.sitterStatusText;
 
-        textElement.textContent = type === 'danger' ? 'Hazard' : (type === 'warning' ? 'Warning' : 'Info');
+        let label = 'Info';
+        if (['danger', 'critical', 'urgent'].includes(type)) label = 'Hazard';
+        else if (['warning', 'alert'].includes(type)) label = 'Warning';
+
+        textElement.textContent = label;
         textElement.className = `status-value ${type}`;
 
         // Reset animation by triggering reflow
-        card.classList.remove('alert-danger', 'alert-warning');
+        card.classList.remove('alert-danger', 'alert-warning', 'alert-critical', 'alert-urgent', 'alert-alert');
         void card.offsetWidth;
         card.classList.add(`alert-${type}`);
 
