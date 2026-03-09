@@ -1,0 +1,27 @@
+# Virtual Environments
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies
+node_modules/
+.npm/
+
+# IDE and Project
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Docker
+.dockerignore
+
+# Misc
+logs/
+*.log
