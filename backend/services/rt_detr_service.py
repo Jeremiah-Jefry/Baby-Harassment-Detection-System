@@ -23,10 +23,10 @@ class RTDETR_VisionService(AIServiceInterface):
         self.lone_baby_start_time = None
         self.last_frame_pixels = None
         
-        logger.info("Initializing RT-DETR Vision Pipeline... (May download model first run)")
-        # Load the actual rtdetr pipeline (using the transformers library)
-        self.detector = pipeline("object-detection", model="PekingU/rtdetr_r50vd")
-        logger.info("RT-DETR Pipeline Loaded.")
+        logger.info("Initializing Object Detection Pipeline... (May download model first run)")
+        # Loading the highly stable Facebook DETR architecture since RT-DETR requires custom trust_remote_code setups
+        self.detector = pipeline("object-detection", model="facebook/detr-resnet-50")
+        logger.info("DETR Pipeline Loaded.")
 
     def _sync_process_frame(self, frame_data: str, current_time: float) -> AlertEvent | None:
         """Synchronous inference function running in a background thread."""
