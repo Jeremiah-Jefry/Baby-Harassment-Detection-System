@@ -8,7 +8,8 @@ from PIL import Image
 from transformers import pipeline
 from services.ai_base import AIServiceInterface
 from core.logging_config import logger
-from models.domain import AlertEvent
+from schemas import AlertEvent
+from database import save_alert_to_db
 
 class RTDETR_VisionService(AIServiceInterface):
     """
@@ -115,6 +116,9 @@ class RTDETR_VisionService(AIServiceInterface):
                 if result:
                     logger.warning(f"RT-DETR triggered alert: {result.message}")
                     await manager.broadcast(result.model_dump_json(), room)
+                    
+                    # Store exact inference payload to SQLite for permanent record
+                    await asyncio.to_thread(save_alert_to_db, result)
                 
                 # Mark task as done
                 inbound_queue.task_done()

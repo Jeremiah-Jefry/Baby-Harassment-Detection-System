@@ -22,3 +22,7 @@ class VideoFrameEvent(BaseEvent):
     """
     type: Literal["video_frame"] = "video_frame"
     content: str  # Simulated content for now, later base64.
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str

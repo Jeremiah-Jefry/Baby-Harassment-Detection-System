@@ -9,8 +9,9 @@ import librosa
 import soundfile as sf
 
 from services.ai_base import AIServiceInterface
-from models.domain import AlertEvent
+from schemas import AlertEvent
 from core.logging_config import logger
+from database import save_alert_to_db
 
 class LSTM_AudioService(AIServiceInterface):
     """
@@ -105,6 +106,9 @@ class LSTM_AudioService(AIServiceInterface):
                 if result:
                     logger.warning(f"Audio Model triggered alert: {result.message}")
                     await manager.broadcast(result.model_dump_json(), room)
+                    
+                    # Store exact inference payload to SQLite for permanent record
+                    await asyncio.to_thread(save_alert_to_db, result)
                 
                 inbound_queue.task_done()
                 

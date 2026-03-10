@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Guardianize</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="dashboard-body">
+    <nav class="navbar dashboard-nav">
+        <div class="nav-container full-width">
+            <div class="logo">Guardianize<span>.enterprise</span></div>
+            <div class="nav-links">
+                <a href="/dashboard">Live Monitor</a>
+                <a href="/settings" class="active">System Settings</a>
+                <a href="/" class="btn btn-secondary">Sign Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <div class="settings-card">
+            <h2>Hardware Configuration</h2>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label>Inference Render Quality (Video)</label>
+                    <select class="settings-select">
+                        <option>720p (Recommended for Edge)</option>
+                        <option>1080p</option>
+                        <option>480p (Resource Saving)</option>
+                    </select>
+                </div>
+
+                <hr class="divider">
+
+                <h2>AI Engine Settings</h2>
+                <div class="form-group">
+                    <label>Sensitivity Threshold (Confidence %)</label>
+                    <input type="range" class="slider" min="50" max="99" value="85">
+                    <div class="slider-val">85%</div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="audio-enable" checked>
+                    <label for="audio-enable">Enable Audio Spectrogram Transformers (AST) processing</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;"
+                    onclick="event.preventDefault(); alert('Settings Saved Successfully.');">Save Preferences</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

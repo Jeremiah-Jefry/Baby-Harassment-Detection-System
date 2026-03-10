@@ -5,6 +5,10 @@ import json
 
 from socket_manager.manager import manager
 from core.logging_config import logger
+from database import get_db
+from sqlalchemy.orm import Session
+from fastapi import Depends
+import models
 
 router = APIRouter()
 
@@ -18,25 +22,38 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
     }
 
-@router.websocket("/ws/media")
-async def websocket_media(websocket: WebSocket):
+@router.get("/api/alerts/history")
+async def get_alerts_history(db: Session = Depends(get_db)):
+    """Fetch the last 50 alerts from SQLite database on dashboard load."""
+    alerts = db.query(models.AlertLog).order_by(models.AlertLog.timestamp.desc()).limit(50).all()
+    # Correctly format it back into the schema structure expected by the JS frontend
+    return [
+        {
+            "id": a.id,
+            "type": a.severity,
+            "message": a.message,
+            "target": a.alert_type,
+            "confidence": a.confidence,
+            "model_source": a.model_source,
+            "timestamp": a.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        } for a in reversed(alerts)  # oldest to newest order
+    ]
+
+@router.websocket("/ws/monitor")
+async def websocket_monitor(websocket: WebSocket):
     """
-    WebSocket route for receiving live video/audio streams from the client.
-    Clients push frames to be processed non-blockingly via asyncio queues.
+    Unified WebSocket route for full-duplex communication.
+    Receives base64 video/audio streams and pushes AI alerts.
     """
-    room = "media"
+    room = "alerts" # Subscribe to AI alert broadcasts
     await manager.connect(websocket, room)
     try:
         while True:
-            # We expect JSON blobs containing base64 data:
-            # { "type": "video_frame", "data": "data:image/jpeg;base64,..." }
-            # { "type": "audio_chunk", "data": "base64..." }
+            # We expect JSON blobs: { "type": "video_frame", "data": "..." }
             message = await websocket.receive_text()
             
-            # Fast ping-pong check
             if message == "ping":
                 await websocket.send_text("pong")
                 continue
@@ -53,29 +70,10 @@ async def websocket_media(websocket: WebSocket):
                     if not audio_queue.full():
                         await audio_queue.put(mdata)
             except json.JSONDecodeError:
-                pass # ignore malformed frames
+                pass # safely ignore
                 
     except WebSocketDisconnect:
         manager.disconnect(websocket, room)
     except Exception as e:
-        logger.error(f"Media WS Error: {e}")
-        manager.disconnect(websocket, room)
-
-@router.websocket("/ws/alerts")
-async def websocket_alerts(websocket: WebSocket):
-    """
-    WebSocket route dedicated strictly to pushing AI real-time alerts.
-    The AI background tasks push alerts to the 'alerts' room via the manager.
-    """
-    room = "alerts"
-    await manager.connect(websocket, room)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            if data == "ping":
-                await websocket.send_text("pong")
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, room)
-    except Exception as e:
-        logger.error(f"Alerts WS Error: {e}")
+        logger.error(f"Monitor WS Error: {e}")
         manager.disconnect(websocket, room)

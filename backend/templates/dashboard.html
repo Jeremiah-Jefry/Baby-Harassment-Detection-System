@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Dashboard Console - Guardianize</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body class="dashboard-body">
+    <nav class="navbar dashboard-nav">
+        <div class="nav-container full-width">
+            <div class="logo">Guardianize<span>.enterprise</span></div>
+            <div class="nav-links">
+                <a href="/dashboard" class="active">Live Monitor</a>
+                <a href="/settings">System Settings</a>
+                <a href="/" class="btn btn-secondary">Sign Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Main Video and Stream Feed Column -->
+        <div class="stream-column">
+            <div class="panel video-panel">
+                <div class="panel-header">
+                    <h2>Live Inference Feed</h2>
+                    <div class="status-badge" id="conn-status"><span class="dot disconnected"></span>Connecting...</div>
+                </div>
+                <!-- Native Camera Stream Wrapper -->
+                <div class="video-wrapper">
+                    <video id="local-video" autoplay muted playsinline></video>
+                    <!-- Hidden canvas for scraping base64 to send to WebSocket -->
+                    <canvas id="hidden-canvas" style="display: none;"></canvas>
+                </div>
+                <div class="panel-footer">
+                    <div class="device-info">
+                        <strong>Source:</strong> Local Device <span id="resolution-detail"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-cards-row">
+                <div class="widget-card" id="vision-status-card">
+                    <div class="icon-wrap vision-icon">👁️</div>
+                    <div class="meta">
+                        <h3>Vision AI (DETR)</h3>
+                        <p id="vision-status" class="status-normal">Active</p>
+                    </div>
+                </div>
+                <div class="widget-card" id="audio-status-card">
+                    <div class="icon-wrap audio-icon">🎙️</div>
+                    <div class="meta">
+                        <h3>Vocal AI (AST)</h3>
+                        <p id="audio-status" class="status-normal">Monitoring</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-Time Alerts Sidebar -->
+        <div class="alerts-sidebar">
+            <div class="panel-header">
+                <h2>Real-Time AI Logs</h2>
+            </div>
+            <div class="alerts-feed" id="alerts-container">
+                <div class="empty-state">System connected. Listening for ML outputs...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WebSockets and Media Capture Orchestrator -->
+    <script src="/static/js/monitor.js"></script>
+</body>
+
+</html>

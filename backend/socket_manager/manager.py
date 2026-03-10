@@ -7,9 +7,8 @@ class ConnectionManager:
     Robust WebSocket Connection Manager handling rooms and targeted broadcasts.
     """
     def __init__(self):
-        # Maps room names (e.g. "video", "alerts") to a set of active connections
+        # Maps room names (e.g. "alerts") to a set of active connections
         self.active_connections: Dict[str, Set[WebSocket]] = {
-            "video": set(),
             "alerts": set()
         }
 
