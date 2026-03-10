@@ -1,45 +1,101 @@
-# Guardianize Web Development MVP
+# Guardianize™ - Intelligent Monitoring System
 
-Guardianize is an AI-powered baby and babysitter monitoring system designed to detect mistreatment, abuse, and hazards. This project contains the boilerplate MVP for the Web Development side, specifically simulating real-time AI alerts and video feeds over WebSockets.
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python Version">
+  <img src="https://img.shields.io/badge/FastAPI-0.111.0-009688.svg" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Database-SQLite3-003B57.svg" alt="SQLite">
+  <img src="https://img.shields.io/badge/AI-HuggingFace-F9AB00.svg" alt="HuggingFace">
+  <img src="https://img.shields.io/badge/Architecture-Monolithic-purple.svg" alt="Monolithic">
+</div>
 
-## Requirements
+---
 
-- Python 3.8+
-- Any modern web browser
+## 📌 Executive Summary
 
-## Setup Instructions
+**Guardianize** is an enterprise-grade, AI-powered monitoring application designed specifically to ensure the safety and well-being of infants and children under supervision. Utilizing state-of-the-art computer vision and acoustic anomaly detection paradigms, the system analyzes real-time environmental data to autonomously identify hazards, erratic physical handling, and auditory distress signals.
 
-### 1. Install Backend Dependencies
-Open your terminal, navigate to the `backend` directory, and install the required Python packages.
+This repository serves as the official monolithic architecture implementation, integrating a dynamic, multi-page frontend dashboard with a robust, computationally optimized AI inference backend.
 
-```bash
-cd backend
+## 🏗 System Architecture
+
+The project is structured as a streamlined, bare-metal monolithic web application, completely negating the need for complex containerization orchestration like Docker.
+
+### Core Technology Stack
+
+*   **Backend Framework:** FastAPI (ASGI) for asynchronous high-performance routing.
+*   **Database Layer:** SQLite powered by SQLAlchemy ORM with Pydantic for rigorous data validation.
+*   **Artificial Intelligence:** Hugging Face `transformers` ecosystem.
+    *   **Vision Engine:** `facebook/detr-resnet-50` (RT-DETR proxy for precise spatial object tracking and heuristic movement analysis).
+    *   **Acoustic Engine:** `MIT/ast-finetuned-audioset-10-10-0.4593` (Audio Spectrogram Transformer for nuanced distress classification).
+*   **Frontend Interface:** Pure HTML5, CSS3, and Vanilla JavaScript for maximum performance and direct DOM manipulation.
+*   **Communication Protocol:** Native Full-Duplex WebSockets (`ws://`) for uninhibited, low-latency telemetry streaming.
+
+### Functional Paradigms
+
+1.  **Unified Routing:** FastAPI concurrently serves RESTful API endpoints, WebSockets interfaces, and Jinja2-templated HTML views from a single Python instance.
+2.  **Asynchronous ML Pipelines:** Heavy inference tasks are offloaded via `asyncio.to_thread` utilizing intelligent temporal frame-skipping, ensuring the primary event loop remains non-blocking on standard computing hardware.
+3.  **Persistent Audit Trails:** All anomalous events detected by the AI models are immediately serialized and permanently committed to the local `guardianize.db` ledger for historical auditing.
+
+---
+
+## 🚀 Deployment & Installation Guide
+
+This system is configured for exclusive local execution leveraging standard Python virtual environments. Please follow these instructions sequentially.
+
+### Prerequisites
+
+*   **Python:** Version 3.11 or greater must be installed and accessible within your system's `PATH`.
+*   **Hardware:** An integrated webcam and microphone are required for edge telemetry capture.
+
+### Environment Initialization
+
+1.  **Acquire Repository:** Navigate to your desired installation directory via your preferred command-line interface (e.g., PowerShell).
+    ```powershell
+    cd path\to\Baby-Harassment-Detection-System
+    ```
+
+2.  **Initialize Virtual Environment:** Generate a localized Python environment to sandbox project dependencies.
+    ```powershell
+    python -m venv venv
+    ```
+
+3.  **Activate Environment:**
+    ```powershell
+    .\venv\Scripts\activate
+    ```
+    *(A `(venv)` indicator should now prefix your terminal prompt).*
+
+### Dependency Resolution
+
+Install the required library matrix. Due to the inclusion of PyTorch and deep learning model binaries, this process may require several minutes based on network bandwidth.
+
+```powershell
 pip install -r requirements.txt
 ```
 
-### 2. Run the FastAPI Server
-Start the Uvicorn server to serve the WebSocket endpoints.
+### Application Bootstrapping
 
-```bash
-uvicorn main:app --reload
+Initialize the Uvicorn ASGI server to orchestrate the application lifecycle.
+
+```powershell
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
-You should see output indicating that the server is running on `http://127.0.0.1:8000`.
 
-### 3. Open the Dashboard
-- Open the `frontend/index.html` file directly in your web browser (you can typically just double-click it).
-- Or, if you use an IDE like VS Code, use the "Live Server" extension to serve the `frontend` folder.
+**Automated Startup Procedures:**
+> *   **Database Hydration:** The SQLite engine will automatically instatiate `guardianize.db` and scaffold all required SQL tables on the initial run.
+> *   **Model Caching:** The Hugging Face inference models will be automatically fetched from remote repositories and cached locally during the first initialization.
 
-## Features
+---
 
-- **Real-Time Video Feed Simulation**: The frontend connects to `ws://localhost:8000/ws/video` and receives constant pseudo-frames representing the camera feed.
-- **AI Alert Simulation**: The frontend connects to `ws://localhost:8000/ws/alerts`. The FastAPI backend runs mock `process_yolo_frame()` and `process_lstm_audio()` functions that randomly generate alerts (like "Abnormal Movement Detected") every 10-15 seconds.
-- **Dynamic Status Updates**: When alerts are received, the corresponding status panel (Baby or Babysitter) updates instantly and visually flashes.
+## 🖥 User Guide
 
-## Connecting Your Actual AI Models
+Once the terminal confirms the successful loading of the **DETR Pipeline** and **Audio Pipeline**, the system is operational.
 
-When you are ready to plug in the actual AI models:
-1. Navigate to `backend/main.py`.
-2. Locate the `process_yolo_frame()` and `process_lstm_audio()` functions.
-3. Replace the mock randomized returns with your actual model inference logic.
-4. Update the `/ws/video` endpoint to transmit actual base64 encoded JPEG strings or stream data instead of text JSON.
-5. Update `frontend/js/app.js` to render the received image stream instead of the text placeholder.
+1.  **Access the Platform:** Navigate your modern web browser (Google Chrome, Microsoft Edge) to [`http://localhost:8000`](http://localhost:8000).
+2.  **Authentication:** Proceed to the Login portal. For this MVP iteration, mock authentication is enabled. You may register any structurally valid email profile; the system will autonomously hash the credentials and provision a new entry within the database.
+3.  **Live Telemetry:** Upon accessing the Dashboard Command Center, authorize the browser's request for Camera and Microphone access.
+4.  **Monitoring:** The system will immediately begin extracting physical frames and acoustic signatures, transmitting them over secure WebSockets mapping directly into the AI heuristic engines. Detected anomalies will populate the "Alert History" ledger in real-time.
+
+---
+
+*Guardianize Internal Development Documentation. Unauthorized structural deviation from this architecture is unsupported in the current MVP phase.*
