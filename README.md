@@ -1,22 +1,13 @@
 # Guardianize™ - Intelligent Monitoring System
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python Version">
-  <img src="https://img.shields.io/badge/FastAPI-0.111.0-009688.svg" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Database-SQLite3-003B57.svg" alt="SQLite">
-  <img src="https://img.shields.io/badge/AI-HuggingFace-F9AB00.svg" alt="HuggingFace">
-  <img src="https://img.shields.io/badge/Architecture-Monolithic-purple.svg" alt="Monolithic">
-</div>
 
----
-
-## 📌 Executive Summary
+##  Executive Summary
 
 **Guardianize** is an enterprise-grade, AI-powered monitoring application designed specifically to ensure the safety and well-being of infants and children under supervision. Utilizing state-of-the-art computer vision and acoustic anomaly detection paradigms, the system analyzes real-time environmental data to autonomously identify hazards, erratic physical handling, and auditory distress signals.
 
 This repository serves as the official monolithic architecture implementation, integrating a dynamic, multi-page frontend dashboard with a robust, computationally optimized AI inference backend.
 
-## 🏗 System Architecture
+##  System Architecture
 
 The project is structured as a streamlined, bare-metal monolithic web application, completely negating the need for complex containerization orchestration like Docker.
 
@@ -38,7 +29,7 @@ The project is structured as a streamlined, bare-metal monolithic web applicatio
 
 ---
 
-## 🚀 Deployment & Installation Guide
+##  Deployment & Installation Guide
 
 This system is configured for exclusive local execution leveraging standard Python virtual environments. Please follow these instructions sequentially.
 
@@ -87,7 +78,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 🖥 User Guide
+##  User Guide
 
 Once the terminal confirms the successful loading of the **DETR Pipeline** and **Audio Pipeline**, the system is operational.
 
