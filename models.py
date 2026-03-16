@@ -1,27 +1,28 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
 from datetime import datetime
+
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from database import Base
+
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    hashed_password: Mapped[str] = mapped_column(String(255))
 
-    alerts = relationship("AlertLog", back_populates="user")
+    alerts: Mapped[list["AlertLog"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+
 
 class AlertLog(Base):
     __tablename__ = "alert_logs"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    alert_type = Column(String, index=True)
-    message = Column(String)
-    severity = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    confidence = Column(Float)
-    model_source = Column(String)
-    
-    user = relationship("User", back_populates="alerts")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    alert_type: Mapped[str] = mapped_column(String(80), index=True)
+    message: Mapped[str] = mapped_column(Text())
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+    user: Mapped[User | None] = relationship(back_populates="alerts")

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // If on the login page, provide a mock authentication logic fetching SQLite backend
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -24,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.status === 'success') {
                     window.location.href = '/dashboard';
                 } else {
-                    alert("Authentication Failed");
+                    alert('Authentication Failed');
                     btn.innerHTML = 'Authenticate';
                     btn.disabled = false;
                 }
             } catch (err) {
                 console.error(err);
-                alert("Server Connection Error");
+                alert('Server Connection Error');
                 btn.innerHTML = 'Authenticate';
                 btn.disabled = false;
             }

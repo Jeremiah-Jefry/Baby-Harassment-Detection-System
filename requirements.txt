@@ -1,19 +1,13 @@
-# Core Enterprise Server Requirements
 fastapi==0.111.0
-uvicorn==0.30.1
-websockets==12.0
+uvicorn[standard]==0.30.1
+jinja2==3.1.4
+sqlalchemy==2.0.31
 pydantic==2.7.4
-pydantic-settings==2.3.4
-jinja2>=3.1.2
-sqlalchemy>=2.0.0
-
-# Real AI / Inference Requirements
+email-validator==2.2.0
+websockets==12.0
+numpy==1.26.4
+Pillow==10.3.0
 torch==2.3.1
 torchvision==0.18.1
 torchaudio==2.3.1
-transformers==4.41.2
-Pillow>=10.3.0
-librosa>=0.10.2
-soundfile>=0.12.1
-numpy==1.26.4
-timm>=0.9.0
+ultralytics==8.2.70

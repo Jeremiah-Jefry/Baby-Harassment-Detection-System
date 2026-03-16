@@ -25,17 +25,14 @@
     </nav>
 
     <div class="dashboard-container">
-        <!-- Main Video and Stream Feed Column -->
         <div class="stream-column">
             <div class="panel video-panel">
                 <div class="panel-header">
                     <h2>Live Inference Feed</h2>
                     <div class="status-badge" id="conn-status"><span class="dot disconnected"></span>Connecting...</div>
                 </div>
-                <!-- Native Camera Stream Wrapper -->
                 <div class="video-wrapper">
                     <video id="local-video" autoplay muted playsinline></video>
-                    <!-- Hidden canvas for scraping base64 to send to WebSocket -->
                     <canvas id="hidden-canvas" style="display: none;"></canvas>
                 </div>
                 <div class="panel-footer">
@@ -49,21 +46,20 @@
                 <div class="widget-card" id="vision-status-card">
                     <div class="icon-wrap vision-icon">👁️</div>
                     <div class="meta">
-                        <h3>Vision AI (DETR)</h3>
+                        <h3>Vision AI (3D CNN)</h3>
                         <p id="vision-status" class="status-normal">Active</p>
                     </div>
                 </div>
                 <div class="widget-card" id="audio-status-card">
                     <div class="icon-wrap audio-icon">🎙️</div>
                     <div class="meta">
-                        <h3>Vocal AI (AST)</h3>
-                        <p id="audio-status" class="status-normal">Monitoring</p>
+                        <h3>Audio AI</h3>
+                        <p id="audio-status" class="status-warn">Inactive</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Real-Time Alerts Sidebar -->
         <div class="alerts-sidebar">
             <div class="panel-header">
                 <h2>Real-Time AI Logs</h2>
@@ -74,8 +70,7 @@
         </div>
     </div>
 
-    <!-- WebSockets and Media Capture Orchestrator -->
-    <script src="/static/js/monitor.js"></script>
+    <script src="/static/js/monitor.js?v=20260317a"></script>
 </body>
 
 </html>

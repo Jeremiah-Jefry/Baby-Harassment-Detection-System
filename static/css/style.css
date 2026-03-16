@@ -25,7 +25,6 @@ body {
     line-height: 1.6;
 }
 
-/* Navbar */
 .navbar {
     background-color: var(--panel-bg);
     border-bottom: 1px solid var(--border);
@@ -68,7 +67,6 @@ body {
     color: var(--accent);
 }
 
-/* Buttons */
 .btn {
     padding: 0.6rem 1.2rem;
     border-radius: var(--radius);
@@ -104,7 +102,6 @@ body {
     margin-top: 1rem;
 }
 
-/* Landing Page */
 .hero-section {
     max-width: 1200px;
     margin: 6rem auto;
@@ -144,7 +141,6 @@ body {
     max-width: 90%;
 }
 
-/* Mock Visual */
 .hero-visual {
     flex: 1;
 }
@@ -194,7 +190,6 @@ body {
     background-color: rgba(248, 81, 73, 0.1);
 }
 
-/* Forms & Layouts */
 .center-layout {
     display: flex;
     align-items: center;
@@ -257,7 +252,6 @@ input:focus, select:focus {
     box-shadow: 0 0 0 2px rgba(47, 129, 247, 0.2);
 }
 
-/* Settings Form Specifics */
 .divider {
     border: 0;
     height: 1px;
