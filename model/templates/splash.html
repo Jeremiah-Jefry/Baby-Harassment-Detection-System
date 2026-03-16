@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardianEyes - AI Baby Safety</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='splash.css') }}">
+</head>
+<body>
+    <div class="splash-container">
+        <div class="logo-container">
+            <h1 class="logo-text" id="logoText">
+                <span class="letter">G</span>
+                <span class="letter">U</span>
+                <span class="letter">A</span>
+                <span class="letter">R</span>
+                <span class="letter">D</span>
+                <span class="letter">I</span>
+                <span class="letter">A</span>
+                <span class="letter">N</span>
+                <span class="space"></span>
+                <span class="letter">E</span>
+                <span class="letter">Y</span>
+                <span class="letter">E</span>
+                <span class="letter">S</span>
+            </h1>
+        </div>
+    </div>
+
+    <script>
+        const logoText = document.getElementById('logoText');
+
+        setTimeout(() => {
+            logoText.classList.add('complete');
+        }, 3000);
+
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 5000);
+    </script>
+</body>
+</html>

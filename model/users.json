@@ -1,0 +1,21 @@
+{
+  "dharshni0806@gmail.com": {
+    "parent_name": "Athmika",
+    "mobile": "9080400238",
+    "email": "dharshni0806@gmail.com",
+    "mail_password": "dharsh@06",
+    "address": "12/56, vivekanandhar street, karumathampatti",
+    "camera_ip": "123.345.3.456",
+    "registered_at": "2026-03-16 23:26:30",
+    "backup_contacts": [],
+    "alert_numbers": [],
+    "settings": {
+      "alerts_enabled": true,
+      "sms_enabled": true,
+      "email_enabled": false,
+      "push_enabled": false,
+      "auto_record": true,
+      "continuous_record": false
+    }
+  }
+}

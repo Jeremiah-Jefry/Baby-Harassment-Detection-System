@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardianEyes - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">GuardianEyes</div>
+            <div class="nav-user">
+                <span class="user-welcome">Welcome, {{ user.parent_name }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-tag">AI-Powered Baby Safety System</p>
+            <h1>Watch Over What<br>Matters Most</h1>
+            <p class="hero-sub">GuardianEyes keeps your baby safe around the clock — with intelligent monitoring, instant alerts, and complete peace of mind.</p>
+            <a href="/camera-management" class="hero-btn">
+                Open Camera Surveillance
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Why GuardianEyes Section -->
+    <section class="why-section">
+        <div class="section-inner">
+            <p class="section-tag">Why Choose Us</p>
+            <h2 class="section-title">Built for Parents, Powered by AI</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-num">01</div>
+                    <h4>Faster Emergency Response</h4>
+                    <p>Instant alerts mean you respond in seconds, not minutes.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-num">02</div>
+                    <h4>Safer Home Environments</h4>
+                    <p>Continuous monitoring builds a safer space for your infant.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-num">03</div>
+                    <h4>Support for New Parents</h4>
+                    <p>AI guidance assists parents with limited caregiving experience.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-num">04</div>
+                    <h4>Less Physical Supervision</h4>
+                    <p>Reduces the need for constant in-person monitoring.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-num">05</div>
+                    <h4>Complete Peace of Mind</h4>
+                    <p>Know your baby is safe whether you're near or far.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-num">06</div>
+                    <h4>Adaptable & Expandable</h4>
+                    <p>Works in any room layout and scales with future upgrades.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 GuardianEyes &nbsp;·&nbsp; AI-Powered Baby Safety &nbsp;·&nbsp; All rights reserved</p>
+    </footer>
+
+    <!-- Audio Alert Box -->
+    <div id="audioAlertBox"></div>
+    <script>
+    setInterval(() => {
+        fetch("/audio-alert")
+            .then(res => res.json())
+            .then(data => {
+                const box = document.getElementById("audioAlertBox");
+                if (data.alert != "None") {
+                    box.innerHTML = `
+                        <div class="audio-alert-card">
+                            <span class="audio-alert-icon">🔊</span>
+                            <div class="audio-alert-text">
+                                <strong>Audio Alert Detected</strong><br>
+                                <span>${data.alert}</span>
+                            </div>
+                        </div>`;
+                } else {
+                    box.innerHTML = "";
+                }
+            })
+            .catch(err => console.error("Audio alert fetch error:", err));
+    }, 2000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - GuardianEyes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="nav-left">
+            <a href="/camera-management" class="back-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Cameras
+            </a>
+            <h1 class="page-title">Settings</h1>
+        </div>
+        <div class="nav-right">
+            <a href="/alerts" class="nav-btn alerts-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Alerts
+            </a>
+            <a href="/logout" class="nav-btn logout-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- User Information -->
+        <div class="settings-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <h2>User Information</h2>
+                    <p class="card-desc">Basic account details used for login and alerts</p>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value" id="displayName">{{ user.parent_name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value" id="displayEmail">{{ user.email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Mobile</div>
+                <div class="info-value" id="displayMobile">{{ user.mobile }}</div>
+            </div>
+
+            <div class="action-group">
+                <button class="action-btn" onclick="showModal('username')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Change Username
+                </button>
+                <button class="action-btn" onclick="showModal('password')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Change Password
+                </button>
+                <button class="action-btn" onclick="showModal('email')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Update Email
+                </button>
+                <button class="action-btn" onclick="showModal('phone')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    Add Phone Number
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert Preferences -->
+        <div class="settings-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Alert Preferences</h2>
+                    <p class="card-desc">Controls how and when alerts are sent to you</p>
+                </div>
+            </div>
+
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Enable Alerts</div>
+                    <div class="toggle-desc">Receive alerts when activity is detected</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked onchange="saveSetting('alerts_enabled', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">SMS Notifications</div>
+                    <div class="toggle-desc">Receive alert messages via SMS to your phone</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked onchange="saveSetting('sms_enabled', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Email Notifications</div>
+                    <div class="toggle-desc">Receive alert summaries to your email address</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" onchange="saveSetting('email_enabled', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Push Notifications</div>
+                    <div class="toggle-desc">Instant alerts on your device via browser push</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" onchange="saveSetting('push_enabled', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="settings-card">
+            <div class="card-header">
+                <div class="card-icon urgent">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Emergency Contacts</h2>
+                    <p class="card-desc">People who will be notified in an emergency situation</p>
+                </div>
+            </div>
+
+            <div class="contact-list" id="contactList">
+                {% if user.mobile %}
+                <div class="contact-item">
+                    <div class="contact-avatar">P</div>
+                    <div class="contact-details">
+                        <div class="contact-name">Primary Parent</div>
+                        <div class="contact-number">{{ user.mobile }}</div>
+                    </div>
+                    <span class="contact-badge primary">Primary</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="action-group">
+                <button class="action-btn" onclick="showModal('parent_phone')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Parent Phone Number
+                </button>
+                <button class="action-btn" onclick="showModal('backup_contact')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Backup Contact
+                </button>
+                <button class="action-btn" onclick="showModal('multi_alert')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Send Alerts to Multiple Numbers
+                </button>
+            </div>
+        </div>
+
+        <!-- Recording Settings -->
+        <div class="settings-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Recording Settings</h2>
+                    <p class="card-desc">Control how and when cameras record footage</p>
+                </div>
+            </div>
+
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Auto-Record on Motion</div>
+                    <div class="toggle-desc">Automatically start recording when movement is detected</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked onchange="saveSetting('auto_record', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">24/7 Continuous Recording</div>
+                    <div class="toggle-desc">Record footage around the clock regardless of activity</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" onchange="saveSetting('continuous_record', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Update</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" id="btnSave" onclick="saveModal()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let currentModalType = null;
+
+        const modalConfigs = {
+            username: {
+                title: 'Change Username',
+                body: `<div class="field-group">
+                    <label>New Username</label>
+                    <input type="text" id="f1" placeholder="Enter new username" class="modal-input">
+                </div>`
+            },
+            password: {
+                title: 'Change Password',
+                body: `<div class="field-group">
+                    <label>Current Password</label>
+                    <input type="password" id="f1" placeholder="Enter current password" class="modal-input">
+                </div>
+                <div class="field-group" style="margin-top:14px">
+                    <label>New Password</label>
+                    <input type="password" id="f2" placeholder="Enter new password" class="modal-input">
+                </div>
+                <div class="field-group" style="margin-top:14px">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="f3" placeholder="Confirm new password" class="modal-input">
+                </div>`
+            },
+            email: {
+                title: 'Update Email',
+                body: `<div class="field-group">
+                    <label>New Email Address</label>
+                    <input type="email" id="f1" placeholder="Enter new email" class="modal-input">
+                </div>`
+            },
+            phone: {
+                title: 'Update Phone Number',
+                body: `<div class="field-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="f1" placeholder="+1 000 000 0000" class="modal-input">
+                </div>`
+            },
+            parent_phone: {
+                title: 'Add Parent Phone Number',
+                body: `<div class="field-group">
+                    <label>Parent Phone Number</label>
+                    <input type="tel" id="f1" placeholder="+1 000 000 0000" class="modal-input">
+                    <p class="modal-hint">This number will receive all emergency alerts immediately.</p>
+                </div>`
+            },
+            backup_contact: {
+                title: 'Add Backup Contact',
+                body: `<div class="field-group">
+                    <label>Contact Name</label>
+                    <input type="text" id="f1" placeholder="e.g. Grandparent" class="modal-input">
+                </div>
+                <div class="field-group" style="margin-top:14px">
+                    <label>Phone Number</label>
+                    <input type="tel" id="f2" placeholder="+1 000 000 0000" class="modal-input">
+                    <p class="modal-hint">Backup contact receives alerts only if the primary contact is unreachable.</p>
+                </div>`
+            },
+            multi_alert: {
+                title: 'Alert Multiple Numbers',
+                body: `<div class="field-group">
+                    <label>Additional Numbers</label>
+                    <textarea id="f1" placeholder="Enter phone numbers, one per line" class="modal-input modal-textarea" rows="4"></textarea>
+                    <p class="modal-hint">All numbers listed here will receive alerts simultaneously.</p>
+                </div>`
+            }
+        };
+
+        function showModal(type) {
+            currentModalType = type;
+            const config = modalConfigs[type];
+            document.getElementById('modalTitle').textContent = config.title;
+            document.getElementById('modalBody').innerHTML = config.body;
+            document.getElementById('btnSave').disabled = false;
+            document.getElementById('btnSave').textContent = 'Save Changes';
+            document.getElementById('settingsModal').classList.add('show');
+            // Focus first input
+            setTimeout(() => {
+                const first = document.getElementById('f1');
+                if (first) first.focus();
+            }, 100);
+        }
+
+        function closeModal() {
+            document.getElementById('settingsModal').classList.remove('show');
+            currentModalType = null;
+        }
+
+        async function saveModal() {
+            const btn = document.getElementById('btnSave');
+            const type = currentModalType;
+
+            // Gather values
+            const f1 = document.getElementById('f1')?.value.trim();
+            const f2 = document.getElementById('f2')?.value.trim();
+            const f3 = document.getElementById('f3')?.value.trim();
+
+            // Client-side validation
+            if (!f1) {
+                showToast('Please fill in the required field', 'error');
+                return;
+            }
+
+            if (type === 'password') {
+                if (!f2) { showToast('Please enter a new password', 'error'); return; }
+                if (f2 !== f3) { showToast('New passwords do not match', 'error'); return; }
+                if (f2.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+            }
+
+            // Build payload
+            const payload = { type };
+            if (type === 'username')       payload.username     = f1;
+            if (type === 'password')       { payload.current_password = f1; payload.new_password = f2; }
+            if (type === 'email')          payload.email        = f1;
+            if (type === 'phone')          payload.mobile       = f1;
+            if (type === 'parent_phone')   payload.parent_phone = f1;
+            if (type === 'backup_contact') { payload.contact_name = f1; payload.contact_phone = f2; }
+            if (type === 'multi_alert')    payload.numbers      = f1;
+
+            // Loading state
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const res = await fetch('/update-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast(data.message || 'Changes saved successfully', 'success');
+                    closeModal();
+
+                    // Update visible values on page without reload
+                    if (type === 'username' && data.new_value) {
+                        document.getElementById('displayName').textContent = data.new_value;
+                    }
+                    if (type === 'email' && data.new_value) {
+                        document.getElementById('displayEmail').textContent = data.new_value;
+                    }
+                    if (type === 'phone' && data.new_value) {
+                        document.getElementById('displayMobile').textContent = data.new_value;
+                    }
+                    if (type === 'parent_phone' && data.new_value) {
+                        addContactToList('Primary Parent', data.new_value, 'primary', 'P');
+                    }
+                    if (type === 'backup_contact' && data.contact_name) {
+                        const initial = (data.contact_name[0] || 'B').toUpperCase();
+                        addContactToList(data.contact_name, data.contact_phone || '', 'backup', initial);
+                    }
+                } else {
+                    showToast(data.message || 'Something went wrong. Please try again.', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Save Changes';
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Save Changes';
+            }
+        }
+
+        function addContactToList(name, number, badgeType, initial) {
+            const list = document.getElementById('contactList');
+            const item = document.createElement('div');
+            item.className = 'contact-item';
+            item.innerHTML = `
+                <div class="contact-avatar">${initial}</div>
+                <div class="contact-details">
+                    <div class="contact-name">${name}</div>
+                    <div class="contact-number">${number}</div>
+                </div>
+                <span class="contact-badge ${badgeType}">${badgeType === 'primary' ? 'Primary' : 'Backup'}</span>
+            `;
+            list.appendChild(item);
+        }
+
+        async function saveSetting(key, value) {
+            try {
+                const res = await fetch('/update-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'toggle', key, value })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Setting updated', 'success');
+                } else {
+                    showToast(data.message || 'Failed to update setting', 'error');
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.', 'error');
+            }
+        }
+
+        function showToast(message, type) {
+            const t = document.getElementById('toast');
+            t.textContent = message;
+            t.className = `toast ${type} show`;
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Allow Enter key to submit modal
+        document.getElementById('settingsModal').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveModal();
+            }
+        });
+    </script>
+</body>
+</html>

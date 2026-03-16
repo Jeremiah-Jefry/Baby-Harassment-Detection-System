@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Input - GuardianEyes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='video_input.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="nav-left">
+            <a href="/camera-management" class="back-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Cameras
+            </a>
+            <h1 class="page-title">Video Input</h1>
+        </div>
+        <div class="nav-right">
+            <a href="/alerts" class="nav-btn alerts-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Alerts
+            </a>
+            <a href="/dashboard" class="nav-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Dashboard
+            </a>
+            <a href="/logout" class="nav-btn logout-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="upload-card">
+
+            <div class="header-section">
+                <div class="header-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
+                <h2>Upload Video for Analysis</h2>
+                <p class="subtitle">Upload a video file or provide a URL for AI-powered baby safety monitoring</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchTab('file')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Upload File
+                </button>
+                <button class="tab-btn" onclick="switchTab('url')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    Video URL
+                </button>
+            </div>
+
+            <!-- File Upload Tab -->
+            <div id="file-tab" class="tab-content active">
+                <form action="/upload-video" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                    <div class="upload-area" id="dropZone">
+                        <input type="file" id="videoFile" name="video" accept="video/mp4,video/avi,video/mov,video/mkv" hidden>
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3>Drag and drop your video here</h3>
+                        <p class="or-text">or</p>
+                        <button type="button" class="browse-btn" onclick="document.getElementById('videoFile').click()">
+                            Browse Files
+                        </button>
+                        <p class="file-info">Supported: MP4, AVI, MOV, MKV &nbsp;·&nbsp; Max 500MB</p>
+                    </div>
+
+                    <div id="filePreview" class="file-preview" style="display:none;">
+                        <div class="preview-card">
+                            <div class="preview-icon">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                </svg>
+                            </div>
+                            <div class="preview-details">
+                                <h4 id="fileName">video.mp4</h4>
+                                <p id="fileSize">0 MB</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="uploadProgress"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="remove-btn" onclick="removeFile()" title="Remove">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn" id="fileSubmitBtn" disabled>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"></polyline>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Upload & Analyse
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="window.location.href='/camera-management'">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- URL Tab -->
+            <div id="url-tab" class="tab-content">
+                <form action="/upload-video-url" method="POST" id="urlUploadForm">
+                    <div class="url-section">
+                        <label for="videoURL" class="field-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Video URL
+                        </label>
+                        <input type="url" id="videoURL" name="video_url" class="url-input" placeholder="https://example.com/video.mp4" required>
+                        <p class="field-hint">Enter a direct link to an MP4, AVI, MOV or MKV video file</p>
+                    </div>
+
+                    <div class="url-section">
+                        <label for="videoName" class="field-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Video Name
+                            <span class="optional">optional</span>
+                        </label>
+                        <input type="text" id="videoName" name="video_name" class="url-input" placeholder="e.g. Baby Monitor - Living Room">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"></polyline>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Process Video URL
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="window.location.href='/camera-management'">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const btns = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            btns.forEach(b => b.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            if (tab === 'file') {
+                btns[0].classList.add('active');
+                document.getElementById('file-tab').classList.add('active');
+            } else {
+                btns[1].classList.add('active');
+                document.getElementById('url-tab').classList.add('active');
+            }
+        }
+
+        const dropZone   = document.getElementById('dropZone');
+        const fileInput  = document.getElementById('videoFile');
+        const filePreview = document.getElementById('filePreview');
+        const submitBtn  = document.getElementById('fileSubmitBtn');
+
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) { fileInput.files = files; handleFileSelect(files[0]); }
+        });
+
+        fileInput.addEventListener('change', e => {
+            if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            dropZone.style.display = 'none';
+            filePreview.style.display = 'block';
+            submitBtn.disabled = false;
+        }
+
+        function removeFile() {
+            fileInput.value = '';
+            dropZone.style.display = 'flex';
+            filePreview.style.display = 'none';
+            submitBtn.disabled = true;
+        }
+
+        document.getElementById('fileUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const bar = document.getElementById('uploadProgress');
+            let p = 0;
+            const iv = setInterval(() => {
+                p += 10;
+                bar.style.width = p + '%';
+                if (p >= 100) { clearInterval(iv); setTimeout(() => this.submit(), 500); }
+            }, 200);
+        });
+    </script>
+</body>
+</html>
