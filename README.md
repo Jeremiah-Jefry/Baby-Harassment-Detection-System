@@ -87,6 +87,13 @@ Once the terminal confirms the successful loading of the **DETR Pipeline** and *
 3.  **Live Telemetry:** Upon accessing the Dashboard Command Center, authorize the browser's request for Camera and Microphone access.
 4.  **Monitoring:** The system will immediately begin extracting physical frames and acoustic signatures, transmitting them over secure WebSockets mapping directly into the AI heuristic engines. Detected anomalies will populate the "Alert History" ledger in real-time.
 
+### Camera Access Requirement (Important)
+
+- Browsers allow webcam/mic capture only on secure origins: `https://...` or `http://localhost`.
+- If you open this app from another device using plain `http://<LAN-IP>:8000`, camera access will be blocked by browser policy.
+- For local testing, use `http://localhost:8000` on the same machine running the server.
+- For online/LAN access with camera enabled, expose the app over HTTPS (for example with a reverse proxy or HTTPS tunnel).
+
 ---
 
 *Guardianize Internal Development Documentation. Unauthorized structural deviation from this architecture is unsupported in the current MVP phase.*

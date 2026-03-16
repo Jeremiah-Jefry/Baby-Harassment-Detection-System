@@ -17,10 +17,20 @@ class GuardianMonitor {
 
         this.mediaRecorder = null;
         this.captureTimer = null;
+        this.reconnectTimer = null;
+        this.isCapturing = false;
+        this.localStream = null;
     }
 
     async init() {
-        if (!this.videoObj) return;
+        if (!this.videoObj || !this.canvas || !this.ctx) {
+            console.error("Dashboard media elements are missing.");
+            return;
+        }
+
+        if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
 
         // 1. Establish Secure WebSocket to FastAPI Backend Monitor endpoint
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -35,6 +45,10 @@ class GuardianMonitor {
             this.startMediaCapture();
         };
 
+        this.ws.onerror = () => {
+            this.connStatus.innerHTML = '<span class="dot disconnected"></span>Network Error';
+        };
+
         this.ws.onmessage = (event) => {
             if (event.data === 'pong') return;
             try {
@@ -47,60 +61,153 @@ class GuardianMonitor {
 
         this.ws.onclose = () => {
             this.connStatus.innerHTML = '<span class="dot disconnected"></span>Disconnected/Reconnecting...';
-            setTimeout(() => this.init(), 3000); // Reconnect loop
+            if (this.reconnectTimer) {
+                clearTimeout(this.reconnectTimer);
+            }
+            this.reconnectTimer = setTimeout(() => this.init(), 3000); // Reconnect loop
         };
     }
 
     async startMediaCapture() {
+        if (this.isCapturing) return;
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            this.connStatus.innerHTML = '<span class="dot disconnected"></span>Media API unsupported';
+            alert("This browser cannot access camera APIs. Use a modern Chrome/Edge/Firefox build.");
+            return;
+        }
+
+        // Camera APIs require secure origins. localhost is allowed, remote HTTP is blocked by browsers.
+        const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+        if (!window.isSecureContext && !isLocalhost) {
+            this.connStatus.innerHTML = '<span class="dot disconnected"></span>HTTPS required for camera';
+            alert("Camera is blocked because this page is not secure. Use HTTPS for online access, or open via http://localhost:8000 on the same machine.");
+            return;
+        }
+
         try {
-            // Get local camera & microphone streams
+            // Try full AV capture first.
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { width: 1280, height: 720 },
                 audio: true
             });
-            this.videoObj.srcObject = stream;
+            await this.attachAndStartStream(stream);
 
-            // Wait for video mapping
-            this.videoObj.onloadedmetadata = () => {
-                this.canvas.width = this.videoObj.videoWidth;
-                this.canvas.height = this.videoObj.videoHeight;
-                document.getElementById('resolution-detail').innerText = `(${this.videoObj.videoWidth}x${this.videoObj.videoHeight})`;
+        } catch (fullMediaErr) {
+            console.warn("AV capture failed, retrying with video only.", fullMediaErr);
 
-                // Start sending specific frames to RT-DETR Vision service
-                this.captureTimer = setInterval(() => this.sendVideoFrame(), CAPTURE_INTERVAL_MS);
-            };
+            try {
+                const videoOnlyStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 1280, height: 720 },
+                    audio: false
+                });
+                await this.attachAndStartStream(videoOnlyStream);
+                this.audioStatus.innerText = "Mic unavailable";
+                this.audioStatus.className = "status-warn";
+            } catch (videoOnlyErr) {
+                console.error("Critical Permission Error accessing local Device", videoOnlyErr);
+                this.connStatus.innerHTML = '<span class="dot disconnected"></span>Camera blocked';
+                const reason = this.getMediaErrorReason(videoOnlyErr);
+                alert(`Camera access failed: ${reason}`);
+            }
+        }
+    }
 
-            // Setup MediaRecorder for audio chunks to LSTM Acoustic service
-            const audioTrack = stream.getAudioTracks()[0];
-            if (audioTrack) {
-                const audioStream = new MediaStream([audioTrack]);
-                this.mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus' });
+    getMediaErrorReason(err) {
+        const name = err && err.name ? err.name : "UnknownError";
 
-                this.mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0 && this.ws.readyState === WebSocket.OPEN) {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(e.data);
-                        reader.onloadend = () => {
-                            this.ws.send(JSON.stringify({
-                                type: "audio_chunk",
-                                data: reader.result
-                            }));
-                        };
-                    }
-                };
+        if (name === "NotAllowedError" || name === "SecurityError") {
+            return "permission denied. Allow camera access for this site in browser settings.";
+        }
+        if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+            return "no camera device detected. Connect a webcam and retry.";
+        }
+        if (name === "NotReadableError" || name === "TrackStartError") {
+            return "camera is busy in another app (Zoom/Teams/OBS). Close other apps and retry.";
+        }
+        if (name === "OverconstrainedError" || name === "ConstraintNotSatisfiedError") {
+            return "requested camera resolution is unsupported by this device.";
+        }
+        return `${name}. Check browser console for details.`;
+    }
 
-                // Chunk every 1 second (1000ms) to bypass audio buffer backlogs
-                this.mediaRecorder.start(1000);
+    stopMediaCapture() {
+        if (this.captureTimer) {
+            clearInterval(this.captureTimer);
+            this.captureTimer = null;
+        }
+
+        if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+            this.mediaRecorder.stop();
+        }
+        this.mediaRecorder = null;
+
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => track.stop());
+        }
+        this.localStream = null;
+        this.isCapturing = false;
+    }
+
+    async attachAndStartStream(stream) {
+        this.localStream = stream;
+
+        this.videoObj.onloadedmetadata = async () => {
+            try {
+                await this.videoObj.play();
+            } catch (_) {
+                // Browser autoplay policy may block play in rare cases; user interaction will resume it.
             }
 
-        } catch (err) {
-            console.error("Critical Permission Error accessing local Device", err);
-            alert("Error: Camera or Microphone access denied / hardware disconnected. Guardianize cannot proceed.");
+            this.canvas.width = this.videoObj.videoWidth || 1280;
+            this.canvas.height = this.videoObj.videoHeight || 720;
+
+            const resolutionDetail = document.getElementById('resolution-detail');
+            if (resolutionDetail) {
+                resolutionDetail.innerText = `(${this.canvas.width}x${this.canvas.height})`;
+            }
+
+            if (this.captureTimer) {
+                clearInterval(this.captureTimer);
+            }
+
+            // Start sending specific frames to RT-DETR Vision service
+            this.captureTimer = setInterval(() => this.sendVideoFrame(), CAPTURE_INTERVAL_MS);
+            this.isCapturing = true;
+        };
+
+        this.videoObj.srcObject = stream;
+
+        // Setup MediaRecorder for audio chunks to LSTM Acoustic service
+        const audioTrack = stream.getAudioTracks()[0];
+        if (audioTrack && typeof MediaRecorder !== 'undefined') {
+            const audioStream = new MediaStream([audioTrack]);
+            const preferredMime = 'audio/webm;codecs=opus';
+            const options = MediaRecorder.isTypeSupported(preferredMime) ? { mimeType: preferredMime } : {};
+            this.mediaRecorder = new MediaRecorder(audioStream, options);
+
+            this.mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0 && this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(e.data);
+                    reader.onloadend = () => {
+                        this.ws.send(JSON.stringify({
+                            type: "audio_chunk",
+                            data: reader.result
+                        }));
+                    };
+                }
+            };
+
+            // Chunk every 1 second (1000ms) to bypass audio buffer backlogs
+            this.mediaRecorder.start(1000);
         }
     }
 
     sendVideoFrame() {
-        if (this.ws.readyState !== WebSocket.OPEN) return;
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+        if (!this.ctx || !this.canvas.width || !this.canvas.height) return;
+        if (this.videoObj.readyState < 2) return;
 
         // Draw to hidden canvas to obtain raw JPEG base64 payload
         this.ctx.drawImage(this.videoObj, 0, 0, this.canvas.width, this.canvas.height);
@@ -203,4 +310,10 @@ class GuardianMonitor {
 window.addEventListener('load', () => {
     window.GuardianApp = new GuardianMonitor();
     window.GuardianApp.init();
+});
+
+window.addEventListener('beforeunload', () => {
+    if (window.GuardianApp) {
+        window.GuardianApp.stopMediaCapture();
+    }
 });

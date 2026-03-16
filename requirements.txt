@@ -9,11 +9,11 @@ sqlalchemy>=2.0.0
 
 # Real AI / Inference Requirements
 torch==2.3.1
-torchvision>=0.18.1
-torchaudio>=2.3.1
+torchvision==0.18.1
+torchaudio==2.3.1
 transformers==4.41.2
 Pillow>=10.3.0
 librosa>=0.10.2
 soundfile>=0.12.1
-numpy<2.0.0
+numpy==1.26.4
 timm>=0.9.0
