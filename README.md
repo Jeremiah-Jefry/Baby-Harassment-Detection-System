@@ -1,4 +1,4 @@
-# Guardianize™ - Intelligent Monitoring System
+# Guardianize - Intelligent Monitoring System
 
 
 ##  Executive Summary
